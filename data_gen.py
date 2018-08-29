@@ -14,6 +14,9 @@ def get_next_batch(index, batch_size):
 def read_video(video_path):
     ret = []
     for img in os.listdir(video_path):
-        img = mpimg.imread(os.path.join(video_path, img))
-        ret.append(img)
+        try:
+            img = mpimg.imread(os.path.join(video_path, img)).reshape(-1)
+            ret.append(img)
+        except Exception as ex:
+            print("Exception while reading ", img, ". Skipping it")
     return ret

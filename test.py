@@ -42,8 +42,8 @@ with tf.Session() as sess:
         (loss_val, _) = sess.run([ae.loss, ae.train], {p_input: random_sequences})
         print('iter %d:' % (i + 1), loss_val)
 
-    (input_, output_, enstate) = sess.run([ae.input_, ae.output_, ae.enc_state], {p_input: r + d})
+    (input_, output_) = sess.run([ae.input_, ae.output_, ae.enc_state], {p_input: r + d})
     print('train result :')
     print('input :', input_[0, :, :].flatten())
     print('output :', output_[0, :, :].flatten())
-    print('enc out :', enstate[0, :, :].flatten())
+    print('diff value :', np.sum(input_ - output_))

@@ -2,6 +2,7 @@
 import numpy as np
 import tensorflow as tf
 import os
+from data_gen import get_next_batch
 tf.reset_default_graph()
 tf.set_random_seed(2016)
 np.random.seed(2016)
@@ -29,6 +30,7 @@ ae = LSTMAutoencoder(hidden_num, p_inputs, cell=cell, decode_without_input=True)
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
+    sequences = None
 
     for i in range(epochs):
         for j in range(iter_per_epoch):
@@ -38,16 +40,12 @@ with tf.Session() as sess:
               An initial number of each sequence is in the range from 0 to 19.
               (ex. [8. 9. 10. 11. 12. 13. 14. 15])
             """
-            r = np.random.randint(20, size=batch_num).reshape([batch_num, 1, 1])
-            r = np.tile(r, (1, step_num, elem_num))
-            d = np.linspace(0, step_num, elem_num*step_num, endpoint=False).reshape([1, step_num, elem_num])
-            d = np.tile(d, (batch_num, 1, 1))
-            random_sequences = r + d
+            sequences = get_next_batch(j, batch_num)
 
-            (loss_val, _) = sess.run([ae.loss, ae.train], {p_input: random_sequences})
+            (loss_val, _) = sess.run([ae.loss, ae.train], {p_input: sequences})
             print('Epoch ', i,' iter %d:' % (j + 1), loss_val)
 
-    (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: r + d})
+    (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: sequences})
     print('train result :')
     print('input :', input_[0, :, :].flatten())
     print('output :', output_[0, :, :].flatten())
