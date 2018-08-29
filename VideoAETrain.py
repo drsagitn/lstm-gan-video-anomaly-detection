@@ -42,7 +42,7 @@ with tf.Session() as sess:
     saver = tf.train.Saver()
     model_name = "videoae_" + dataset_name + '_' + str(hidden_num) + ".ckpt"
     if is_existing(model_name):
-        saver.restore(sess, "models/test.ckpt")
+        saver.restore(sess, "models/" + model_name)
 
     for i in range(epochs):
         for j in range(iter_per_epoch):
