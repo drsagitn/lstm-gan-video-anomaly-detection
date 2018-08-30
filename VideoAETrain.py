@@ -22,12 +22,14 @@ batch_num = 1
 hidden_num = 128
 step_num = 200  #  number of frames in video
 elem_num = 37604  #  number of pixel in one frame
-epochs = 10
+epochs = 3000
 dataset_name = 'UCSDped1'
 TRAIN_DIR = 'data/' + dataset_name + '/Train'
 n_train_video = len(os.listdir(TRAIN_DIR))
 iter_per_epoch = int(n_train_video / batch_num)
 iteration = 10000
+
+training_indexes = os.listdir(TRAIN_DIR);
 
 # placeholder list
 p_input = tf.placeholder(tf.float32, shape=(batch_num, step_num, elem_num))
@@ -45,15 +47,9 @@ with tf.Session() as sess:
         saver.restore(sess, "models/" + model_name)
 
     for i in range(epochs):
+        # if batchsize > 1 should shuffle dataset
         for j in range(iter_per_epoch):
-            """Random sequences.
-              Every sequence has size batch_num * step_num * elem_num 
-              Each step number increases 1 by 1.
-              An initial number of each sequence is in the range from 0 to 19.
-              (ex. [8. 9. 10. 11. 12. 13. 14. 15])
-            """
             sequences = get_next_batch(j, batch_num)
-
             (loss_val, _) = sess.run([ae.loss, ae.train], {p_input: sequences})
             print('Epoch ', i,' iter %d:' % (j + 1), loss_val)
 

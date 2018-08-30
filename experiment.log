@@ -1,0 +1,4 @@
+2018-08-29: Train first VideoAE with dataset UCSDped1 for 100 epoches. Hidden field = 128. Loss~ 200. Latest diff = 1.8x10e7. => Train more with 700 epoches.
+
+2018-08-20: found index sampled not random shuffled after every epoch. And reading exception may cause insufficient data in returned batch
+No Shuffling is ok because batch size = 1.
