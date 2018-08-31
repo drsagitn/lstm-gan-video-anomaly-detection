@@ -44,7 +44,7 @@ with tf.Session() as sess:
     saver = tf.train.Saver()
     model_name = "videoae_" + dataset_name + '_' + str(hidden_num) + ".ckpt"
     if is_existing(model_name):
-        saver.restore(sess, "models/" + model_name)
+        saver.restore(sess, "models/" + str(hidden_num) + "/" + model_name)
 
     for i in range(epochs):
         # if batchsize > 1 should shuffle dataset
@@ -56,10 +56,11 @@ with tf.Session() as sess:
     (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: sequences})
     print('train result :')
     print('input :', input_[0, :, :].flatten())
+    print(input_[0, :, :].flatten().shape)
     print('output :', output_[0, :, :].flatten())
     print('diff value :', np.sum(input_[0, :, :].flatten() - output_[0, :, :].flatten()))
 
-    file_path = "models/" + model_name
+    file_path = "models/"+ str(hidden_num) + "/" + model_name
     save_path = saver.save(sess, file_path)
     print("Model saved in path: %s" % save_path)
 

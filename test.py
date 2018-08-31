@@ -47,6 +47,7 @@ with tf.Session() as sess:
     (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: r + d})
     print('train result :')
     print('input :', input_[0, :, :].flatten())
+    print(input_[0, :, :].flatten().shape)
     print('output :', output_[0, :, :].flatten())
     print('diff value :', np.sum(input_[0, :, :].flatten() - output_[0, :, :].flatten()))
     save_path = saver.save(sess, "models/test.ckpt")
