@@ -27,7 +27,7 @@ class LSTMAutoencoder(object):
     Args:
       hidden_num : number of hidden elements of each LSTM unit.
       inputs : a list of input tensors with size 
-              (batch_num x elem_num)
+              (batch_num x step_num x elem_num)
       cell : an rnn cell object (the default option 
             is `tf.python.ops.rnn_cell.LSTMCell`)
       optimizer : optimizer for rnn (the default option is

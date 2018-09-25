@@ -1,6 +1,8 @@
 # Basic libraries
 import numpy as np
 import tensorflow as tf
+from data_gen import get_train_data, get_next_batch
+import os
 
 tf.reset_default_graph()
 tf.set_random_seed(2016)
@@ -10,11 +12,11 @@ np.random.seed(2016)
 from LSTMAutoencoder import *
 
 # Constants
-batch_num = 128
-hidden_num = 12
-step_num = 8
-elem_num = 1
-iteration = 10
+batch_num = 2
+hidden_num = 1024
+step_num = 10 # number of frames per time
+elem_num = 115*76  # frame size h x w
+iteration = 100
 
 # placeholder list
 p_input = tf.placeholder(tf.float32, shape=(batch_num, step_num, elem_num))
@@ -26,25 +28,18 @@ ae = LSTMAutoencoder(hidden_num, p_inputs, cell=cell, decode_without_input=True)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()
-    saver.restore(sess, "models/test.ckpt")
+    save_model = "models/test.ckpt"
+    if os.path.exists(save_model):
+        saver.restore(sess, save_model)
+    XTrain = get_train_data("data/scaled_data/UCSDped1/Train", step_num)
 
     for i in range(iteration):
-        """Random sequences.
-          Every sequence has size batch_num * step_num * elem_num 
-          Each step number increases 1 by 1.
-          An initial number of each sequence is in the range from 0 to 19.
-          (ex. [8. 9. 10. 11. 12. 13. 14. 15])
-        """
-        r = np.random.randint(20, size=batch_num).reshape([batch_num, 1, 1])
-        r = np.tile(r, (1, step_num, elem_num))
-        d = np.linspace(0, step_num, step_num, endpoint=False).reshape([1, step_num, elem_num])
-        d = np.tile(d, (batch_num, 1, 1))
-        random_sequences = r + d
+        pinput = get_next_batch(XTrain, i, batch_num)
 
-        (loss_val, _) = sess.run([ae.loss, ae.train], {p_input: random_sequences})
+        (loss_val, _) = sess.run([ae.loss, ae.train], {p_input: pinput})
         print('iter %d:' % (i + 1), loss_val)
 
-    (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: r + d})
+    (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: pinput})
     print('train result :')
     print('input :', input_[0, :, :].flatten())
     print(input_[0, :, :].flatten().shape)

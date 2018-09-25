@@ -3,6 +3,8 @@ import numpy as np
 import tensorflow as tf
 import os
 from data_gen import get_next_batch
+from util import is_existing
+
 tf.reset_default_graph()
 tf.set_random_seed(2016)
 np.random.seed(2016)
@@ -10,18 +12,11 @@ np.random.seed(2016)
 # LSTM-autoencoder
 from LSTMAutoencoder import *
 
-
-def is_existing(model_name):
-    for file in os.listdir("models"):
-        if model_name in file:
-            return True
-    return False
-
 # Constants
 batch_num = 1
 hidden_num = 128
-step_num = 200  #  number of frames in video
-elem_num = 37604  #  number of pixel in one frame
+step_num = 200  # number of frames in video
+elem_num = 37604  # number of pixel in one frame
 epochs = 3000
 dataset_name = 'UCSDped1'
 TRAIN_DIR = 'data/' + dataset_name + '/Train'
@@ -29,7 +24,7 @@ n_train_video = len(os.listdir(TRAIN_DIR))
 iter_per_epoch = int(n_train_video / batch_num)
 iteration = 10000
 
-training_indexes = os.listdir(TRAIN_DIR);
+training_indexes = os.listdir(TRAIN_DIR)
 
 # placeholder list
 p_input = tf.placeholder(tf.float32, shape=(batch_num, step_num, elem_num))
@@ -60,7 +55,7 @@ with tf.Session() as sess:
     print('output :', output_[0, :, :].flatten())
     print('diff value :', np.sum(input_[0, :, :].flatten() - output_[0, :, :].flatten()))
 
-    file_path = "models/"+ str(hidden_num) + "/" + model_name
+    file_path = "models/" + str(hidden_num) + "/" + model_name
     save_path = saver.save(sess, file_path)
     print("Model saved in path: %s" % save_path)
 
