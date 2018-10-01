@@ -21,7 +21,7 @@ class LSTMAutoencoder(object):
         cell=None,
         optimizer=None,
         reverse=True,
-        decode_without_input=False,
+        decode_without_input=True,
         ):
         """
     Args:
@@ -92,6 +92,9 @@ class LSTMAutoencoder(object):
         self.input_ = tf.transpose(tf.stack(inputs), [1, 0, 2])
         self.loss = tf.reduce_mean(tf.square(self.input_
                                    - self.output_))
+        tf.summary.histogram("lstmae_loss_historgram", self.loss)
+        tf.summary.scalar("lstmae_loss_scalar", self.loss)
+
 
         if optimizer is None:
             self.train = tf.train.AdamOptimizer().minimize(self.loss)
