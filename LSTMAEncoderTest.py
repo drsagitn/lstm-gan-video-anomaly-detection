@@ -37,7 +37,7 @@ with tf.Session() as sess:
         iteration = 1
 
         for i in range(iteration):
-            pinput = get_next_batch(XTest, i+5, batch_size)
+            pinput = get_next_batch(XTest, i+15, batch_size)
 
             (input_, output_) = sess.run([ae.input_, ae.output_], {p_input: pinput})
 

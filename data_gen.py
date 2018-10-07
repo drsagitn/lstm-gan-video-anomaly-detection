@@ -45,6 +45,20 @@ def get_train_data(training_dir, step_num):
     return np.array(X_data).reshape(int(len(X_data)/step_num), step_num)
 
 
+def get_data_full(training_dir, step_num):
+    X_data = []
+    for r, dirs, files in os.walk(training_dir):
+        for dir in dirs:
+            for file in sorted(os.listdir(os.path.join(r, dir))):
+                file_path = os.path.join(r, dir, file)
+                try:
+                    img = mpimg.imread(str(file_path)).reshape(-1)
+                    X_data.append(img)
+                except Exception as ex:
+                    print("Exception while reading ", file_path, ". Skipping it")
+    return np.array(X_data).reshape(int(len(X_data) / step_num), step_num, len(img))
+
+
 def get_test_data():
     return [], []
 

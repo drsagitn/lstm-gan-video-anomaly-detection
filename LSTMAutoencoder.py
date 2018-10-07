@@ -49,6 +49,7 @@ class LSTMAutoencoder(object):
         with tf.variable_scope('encoder'):
             (self.z_codes, self.enc_state) = tf.contrib.rnn.static_rnn(self._enc_cell, inputs, dtype=tf.float32)
 
+
         with tf.variable_scope('decoder') as vs:
             dec_weight_ = tf.Variable(tf.truncated_normal([hidden_num,
                     self.elem_num], dtype=tf.float32), name='dec_weight'
@@ -67,9 +68,13 @@ class LSTMAutoencoder(object):
                     dec_outputs = dec_outputs[::-1]
                 dec_output_ = tf.transpose(tf.stack(dec_outputs), [1, 0,
                         2])
+                dec_output_ = tf.Print(dec_output_, [dec_output_], message="dec_output_:")
                 dec_weight_ = tf.tile(tf.expand_dims(dec_weight_, 0),
                         [self.batch_num, 1, 1])
+                dec_bias_ = tf.Print(dec_bias_, [dec_bias_], message="dec_bias_:")
+                dec_weight_ = tf.Print(dec_weight_, [dec_weight_], message="dec_weight_:")
                 self.output_ = tf.matmul(dec_output_, dec_weight_) + dec_bias_
+                self.output_ = tf.Print(self.output_, [self.output_], message="self.output_:")
             else:
 
                 dec_state = self.enc_state
